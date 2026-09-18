@@ -68,16 +68,15 @@ encoded = llm.encode(INPUT_STR)[0].tolist()
 for i in range(50):
     # print("BREAKING")
     # break
-    logits = llm.get_logits_from_input_ids(encoded)
-    next_encoded = max(range(len(logits)), key = lambda i: logits[i])
+    logits: list[float] = llm.get_logits_from_input_ids(encoded)
+    next_encoded: int = max(range(len(logits)), key = lambda i: logits[i])
     encoded.append(next_encoded)
-    next_decoded = llm.decode(next_encoded)
+    next_decoded = llm.decode([next_encoded])
     print("iter: ", llm.decode(encoded), f'<{next_decoded}>')
     print()
 
-def __main__():
+def __main__() -> None:
     print("__main__")
-
 
 if __name__ == "__main__":
     __main__()

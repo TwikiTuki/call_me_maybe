@@ -27,6 +27,9 @@ lint:
 	@echo '----- flake8 -----'
 	- uv run flake8 .
 
+flake:
+	uv run flake8 .
+
 lint-strict:
 	@echo '----- mypy   -----'
 	uv run mypy . --strict

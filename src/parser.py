@@ -10,16 +10,15 @@ class ProgramArgv(BaseModel):
     input: FilePath = Path('data/input/function_calling_tests.json')
     output: Path = Path('data/output/function_calls.json')
 
-def argv_to_dict(argv: list[str]) -> ProgramArgv:
+def argv_to_dict(argv: list[str]) -> dict[str, str]:
     current_param: str | None = None
-    params: dict = {}  # TODO specify better that the dict is a str:str dict
+    params: dict[str, str] = {}
     for arg in argv:
         if current_param:
             params[current_param] = arg
             current_param = None
         else:
-            # TODO handle blanks
-            arg.replace(" ", "")
+            arg.strip()
             arg_prefix_slashes = arg[:2]
             assert arg_prefix_slashes == '--' , f"invalid syntax {arg_prefix_slashes} expected --"
             current_param = arg[2:]
