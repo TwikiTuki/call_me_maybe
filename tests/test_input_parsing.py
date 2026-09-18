@@ -4,7 +4,7 @@ import pytest
 
 from pathlib import Path
 
-from src import parser
+from src.parsing import arguments as parsing_arguments
 from typing import Any, cast
 
 
@@ -31,23 +31,23 @@ def generate_test_files(tmp_path: Path) -> TypeGenerateTestFiles: # TODO do not 
 
 class Test_ProgramArgv():
     def test_default_values(self, generate_test_files: TypeGenerateTestFiles) -> None:
-        parser.ProgramArgv(
+        parsing_arguments.ProgramArgv(
             functions_definitions = cast(Path, generate_test_files['functions_file'])
         )
     def test_specific_inp_file(self, generate_test_files: TypeGenerateTestFiles) -> None:
-        parser.ProgramArgv(
+        parsing_arguments.ProgramArgv(
             functions_definitions=cast(Path, generate_test_files['functions_file']),
             input=cast(Path, generate_test_files['prompts_default_file'])
         )
 
     def test_specific_out_file(self, generate_test_files: TypeGenerateTestFiles) -> None:
-        parser.ProgramArgv(
+        parsing_arguments.ProgramArgv(
             functions_definitions=cast(Path, generate_test_files['functions_file']),
             output=cast(Path, generate_test_files['function_calls_file'])
         )
 
     def test_specific_inp_out_files(self, generate_test_files: TypeGenerateTestFiles) -> None:
-        parser.ProgramArgv(
+        parsing_arguments.ProgramArgv(
             functions_definitions=cast(Path, generate_test_files['functions_file']),
             input=cast(Path, generate_test_files['prompts_default_file']),
             output=cast(Path, generate_test_files['function_calls_file'])
@@ -59,7 +59,7 @@ class Test_ProgramArgv():
 
 class Test_argv_to_dict():
     def tesster(self, input: list[str], expected: dict[str, str]) -> None:
-        res = parser.argv_to_dict(input)
+        res = parsing_arguments.argv_to_dict(input)
         print(f'res: {res}')
         print(f'expected: {expected}')
         print('--------------------------------')
@@ -75,8 +75,18 @@ class Test_argv_to_dict():
         expected: dict[str, str] = {'key': 'val'}
         self.tesster(input, expected)
 
-        input = ['--key', 'val', '--key2', 'val2', '--key3', 'val3', ]
+        input = ['  --key', 'val', '--key2', 'val2', '--key3', 'val3', ]
         expected = {'key': 'val', 'key2': 'val2', 'key3': 'val3', }
+        self.tesster(input, expected)
+
+    def test_with_blank_params(self) -> None:
+        input: list[str] = [ "     ", '   --key   ', "   ", '   val   ', "     "]
+        expected: dict[str, str] = {'key': 'val'}
+        self.tesster(input, expected)
 
     # def test_with_invalid_params(self):
         # TODO
+
+class TestParseArguments():
+    #TODO
+    ...
