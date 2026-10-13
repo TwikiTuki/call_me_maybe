@@ -26,6 +26,12 @@ class Small_LLM_Model:
     dtype: torch.dtype | None, default=None
         Numerical precision. When using a GPU or MPS we default to ``float16`` to keep memory
         usage reasonable; on CPU we keep ``float32`` for maximum compatibility.
+    cache_dir: str | None, default=None
+        Directory used by Hugging Face for downloaded model and tokenizer files. If omitted,
+        Hugging Face uses its standard cache directory.
+    local_files_only: bool, default=False
+        Load only from the local cache or a local model directory. Set this to ``True`` for
+        offline use after the model has been downloaded.
     """
 
     def __init__(
@@ -35,6 +41,8 @@ class Small_LLM_Model:
         device: str | None = None,
         dtype: torch.dtype | None = None,
         trust_remote_code: bool = True,
+        cache_dir: str | None = None,
+        local_files_only: bool = False,
     ) -> None:
         self._model_name = model_name
 
@@ -54,7 +62,10 @@ class Small_LLM_Model:
 
         # --- load tokenizer & model -------------------------------------------------
         self._tokenizer: PreTrainedTokenizer = AutoTokenizer.from_pretrained(
-            model_name, trust_remote_code=trust_remote_code
+            model_name,
+            cache_dir=cache_dir,
+            local_files_only=local_files_only,
+            trust_remote_code=trust_remote_code,
         )
         if self._tokenizer.pad_token_id is None:
             # ensure we have a pad token to keep batch helpers happy
@@ -62,6 +73,8 @@ class Small_LLM_Model:
 
         self._model: PreTrainedModel = AutoModelForCausalLM.from_pretrained(
             model_name,
+            cache_dir=cache_dir,
+            local_files_only=local_files_only,
             torch_dtype=self._dtype,
             device_map="auto" if self._device == "cuda" else None,
             trust_remote_code=trust_remote_code,

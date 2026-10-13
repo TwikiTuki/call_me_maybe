@@ -61,7 +61,11 @@ result=19
  do this operation 11111111113308039020 - 11111111113308039019
 operation='''
 
-llm = Small_LLM_Model()
+# Downloads the model on the first run and reuses ./models afterwards.
+# llm = Small_LLM_Model(cache_dir="./models", local_files_only=False)
+
+# Offline mode: use this line after the model has been downloaded.
+llm = Small_LLM_Model(cache_dir="./models", local_files_only=True)
 encoded = llm.encode(INPUT_STR)[0].tolist()
 
 
