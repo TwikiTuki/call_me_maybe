@@ -6,7 +6,7 @@ install:
 
 run:
 	uv run python -m src \
-	--functions_definitions  data/input/function_calling_tests.json \
+	--functions_definitions  data/input/functions_definition.json \
 	--input data/input/function_calling_tests.json \
 	--output data/input/function_call.json 
 	echo ran

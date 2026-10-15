@@ -1,5 +1,9 @@
 [
   {
+    "prompt": "Change order of this sitring: \"hellow you\". The first char must be the last and the last the first"
+  },
+
+  {
     "prompt": "What is the sum of 2 and 3?"
   },
   {

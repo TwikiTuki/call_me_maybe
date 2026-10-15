@@ -3,6 +3,7 @@ from src.parsing.functions_definitions import FunctionDefinition
 from src.util.token_tree import TokenNode
 from typing import TYPE_CHECKING
 from math import inf
+import json
 
 if TYPE_CHECKING:
     from llm_sdk import Small_LLM_Model
@@ -41,10 +42,37 @@ class ResponseBuilder():
 
 class PromptResponse():
     def __init__(self, prompt: Prompt,  function_definitions: list[FunctionDefinition], llm = None):
-        self.prompt: Prompt = prompt
         self.functions_definitions: list[FunctionDefinition] = function_definitions
         self.llm = llm if llm else Small_LLM_Model(cache_dir="./models", local_files_only=True)              # I is using the local option llm model
-        self.response: ResponseBuilder = ResponseBuilder(prompt.prompt)
+        self.prompt = prompt
+        instruction: str = self.generate_init_instruction(prompt)
+        self.response: ResponseBuilder = ResponseBuilder(instruction)
+
+    def generate_init_instruction(self, prompt:Prompt):
+        instruction: str = 'You will be given a list of functions in json format.\n'
+        instruction += 'Then you will be given a task and must decide which of the fuctions fits this purpose\n'
+        instruction += 'You must generate a json with the original prompt the name of the function for doing the task and the argument values\n'
+        instruction += '\n'
+        instruction += 'FUNCTIONS LIST: \n'
+        functions = [f.model_dump() for f in self.functions_definitions]
+        instruction += json.dumps(functions) + '\n'
+        instruction += '\n'
+        instruction += 'TASK: \n'
+        instruction += prompt.prompt + '\n'
+        instruction += '\n'
+        instruction += "JSON RESPONSE: \n"
+        return instruction
+
+    def generate_response(self) -> str:
+        self.response.openWith('[')
+        self.response.openWith('{')
+        self.add_prompt()
+        self.add_function()
+        self.add_arguments()
+        self.response.closeWith('}')
+        self.response.closeWith(']')
+
+        return str(self.response)
 
     def build_tokenized_functions_tree(self) -> None:
         tokenized_functions_tree: TokenNode = TokenNode()
@@ -94,14 +122,3 @@ class PromptResponse():
     def add_one_argument(self) -> None:
         ...
 
-
-    def generate_response(self) -> str:
-        self.response.openWith('[')
-        self.response.openWith('{')
-        self.add_prompt()
-        self.add_function()
-        self.add_arguments()
-        self.response.closeWith('}')
-        self.response.closeWith(']')
-
-        return str(self.response)

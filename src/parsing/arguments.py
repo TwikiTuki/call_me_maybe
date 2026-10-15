@@ -10,6 +10,12 @@ class ProgramArgv(BaseModel):
     input: FilePath = Path('data/input/function_calling_tests.json')
     output: Path = Path('data/output/function_calls.json')
 
+    def __repr__(self) -> str:
+        return (
+            f"ProgramArgv(functions_definitions={self.functions_definitions!r}, "
+            f"input={self.input!r}, output={self.output!r})"
+        )
+
 def argv_to_dict(argv: list[str]) -> dict[str, str]:
     print("argv: ")
     print(argv)

@@ -3,6 +3,7 @@ import traceback
 from src.parsing.arguments import parse_arguments, ProgramArgv
 from src.parsing.functions_definitions import get_functions_from_file, FunctionDefinition
 from src.parsing.prompts_file import get_prompts_from_file, Prompt
+from src.response.response import PromptResponse
 from src.util.token_tree import TokenNode
 from sys import argv
 from llm_sdk import Small_LLM_Model
@@ -12,6 +13,7 @@ from math import inf
 
 def load_data(arguments: ProgramArgv) -> tuple[list[FunctionDefinition], list[Prompt]] | None:
     print("Loading function definitions")
+    print(arguments)
     try:
         function_definitions: list[FunctionDefinition] = get_functions_from_file(
             arguments.functions_definitions
@@ -59,6 +61,15 @@ def __main__() -> None:
     function_definitions: list[FunctionDefinition]
     prompts: list[Prompt]
     function_definitions, prompts = dta
+    llm: Small_LLM_Model = Small_LLM_Model(cache_dir="./models", local_files_only=True)              # I is using the local option llm model
+    for p in prompts:
+        # p.prompt = '"give me this string but changing the order the first char must be the last and the last char must be the first: \"hi how are you\";"'
+        response: PromptResponse = PromptResponse(p, function_definitions, llm=llm) 
+        response.generate_response() 
+        print('======================================================================')
+        print(response.response.content)
+        break
+    
     print("__main__")
 
 if __name__ == "__main__":
