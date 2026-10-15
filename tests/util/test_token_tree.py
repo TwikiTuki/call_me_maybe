@@ -44,6 +44,8 @@ class TestTokenNode():
         root = TokenNode()
         root.add_tokens([1, 2, 3])
         assert root.is_entry([1, 2, 3])
+        root.add_tokens([1])
+        assert root.is_entry([1])
 
     def test_add_tokens_and_not_is_entry(self) -> None:
         # Adds a token list and confirms is_entry returns false when searching another list

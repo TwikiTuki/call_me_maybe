@@ -4,7 +4,7 @@ from src.parsing.arguments import parse_arguments, ProgramArgv
 from src.parsing.functions_definitions import get_functions_from_file, FunctionDefinition
 from src.parsing.prompts_file import get_prompts_from_file, Prompt
 from src.response.response import PromptResponse
-from src.util.token_tree import TokenNode
+from src.util.token_tree import TokenNode, print_tree
 from sys import argv
 from llm_sdk import Small_LLM_Model
 from math import inf
@@ -13,7 +13,6 @@ from math import inf
 
 def load_data(arguments: ProgramArgv) -> tuple[list[FunctionDefinition], list[Prompt]] | None:
     print("Loading function definitions")
-    print(arguments)
     try:
         function_definitions: list[FunctionDefinition] = get_functions_from_file(
             arguments.functions_definitions
@@ -72,6 +71,16 @@ def __main__() -> None:
     
     print("__main__")
 
+def foo():
+    from src.util.token_tree import TokenNode
+    node = TokenNode()
+    node.add_tokens([1,2,3])
+    node.add_tokens([11,22,33])
+    print_tree(node)
+
+
 if __name__ == "__main__":
+    foo()
+    exit()
     __main__()
     print("THE END")
