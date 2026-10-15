@@ -105,4 +105,4 @@ class TestInvalidDefinitions():
 
     def test_TypeSpec_with_extra(self) -> None:
         with pytest.raises(ValidationError):
-            spec: TypeSpec = TypeSpec(**{"type": "string", 'wooo': "koook"})
+            TypeSpec.model_validate({"type": "string", "wooo": "koook"})

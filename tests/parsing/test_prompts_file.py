@@ -10,7 +10,7 @@ from src.parsing.prompts_file import (
     get_prompts_from_string,
 )
 
-prompts_inp: list[dict[str: str]] = [
+prompts_inp: list[dict[str, str]] = [
   {
     "prompt": "What is the sum of 2 and 3?"
   },
@@ -31,7 +31,7 @@ prompts_inp: list[dict[str: str]] = [
 prompts_str = json.dumps(prompts_inp)
 
 class TestPrompts():
-    def test_get_prompts_from_string(self):
+    def test_get_prompts_from_string(self) -> None:
         prompts_list = get_prompts_from_string(prompts_str)
         assert type(prompts_list) == list
         assert len(prompts_list) == len(prompts_inp)
@@ -58,12 +58,12 @@ class TestInvalidPrompts():
 
     def test_prompt_not_a_string(self) -> None:
         prompts = copy.deepcopy(prompts_inp)
-        prompts[1]['prompt'] = 42
+        prompts[1]['prompt'] = 42 # type: ignore[assignment]
         _assert_invalid(prompts)
 
     def test_prompt_is_null(self) -> None:
         prompts = copy.deepcopy(prompts_inp)
-        prompts[1]['prompt'] = None
+        prompts[1]['prompt'] = None # type: ignore[assignment]
         _assert_invalid(prompts)
 
     def test_list_of_strings(self) -> None:
@@ -80,7 +80,7 @@ class TestInvalidPrompts():
 
     # @pytest.mark.xfail(reason="extra keys are ignored until extra='forbid'")
     def test_extra_key(self) -> None:
-        prompts = copy.deepcopy(prompts_inp)
+        prompts = copy.deepcopy(prompts_inp) # type: ignore[assignment]
         prompts[0]['foo'] = 1
         _assert_invalid(prompts)
 

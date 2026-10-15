@@ -3,6 +3,12 @@ import json
 from src.response.response import ResponseBuilder
 
 
+def _appended_indent(builder: ResponseBuilder) -> str:
+    """Call addIndent and return only the text it appended."""
+    before = len(builder.content)
+    assert builder.addIndent() is builder
+    return builder.content[before:]
+
 class TestResponseBuilder():
     def test_empty(self) -> None:
         builder = ResponseBuilder()
@@ -60,15 +66,15 @@ class TestResponseBuilder():
 
     def test_indent_grows_and_shrinks(self) -> None:
         builder = ResponseBuilder()
-        assert builder.addIndent() == ""
+        assert _appended_indent(builder) == ""
         builder.openWith('{')
-        assert builder.addIndent() == " "
+        assert _appended_indent(builder) == " "
         builder.openWith('{')
-        assert builder.addIndent() == "  "
+        assert _appended_indent(builder) == "  "
         builder.closeWith('}')
-        assert builder.addIndent() == " "
+        assert _appended_indent(builder) == " "
         builder.closeWith('}')
-        assert builder.addIndent() == ""
+        assert _appended_indent(builder) == ""
 
     def test_custom_indent_str(self) -> None:
         builder = ResponseBuilder(indent_str="    ")
@@ -79,9 +85,10 @@ class TestResponseBuilder():
 
     def test_initial_indent(self) -> None:
         builder = ResponseBuilder(initial_indent=2)
-        assert builder.addIndent() == "  "
+        assert builder.addIndent() is builder
+        assert str(builder) == "  "
         builder.appendLine('"a": 1')
-        assert str(builder) == '\n  "a": 1'
+        assert str(builder) == '  \n  "a": 1'
 
     def test_initial_indent_with_custom_indent_str(self) -> None:
         builder = ResponseBuilder(indent_str="\t", initial_indent=1)

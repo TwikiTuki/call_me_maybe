@@ -71,7 +71,7 @@ def __main__() -> None:
     
     print("__main__")
 
-def foo():
+def foo() -> None:
     from src.util.token_tree import TokenNode
     node = TokenNode()
     node.add_tokens([1,2,3])

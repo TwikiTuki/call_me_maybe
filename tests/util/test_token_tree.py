@@ -69,10 +69,12 @@ class TestTokenNode():
     def test_add_tokens_diverging_after_shared_prefix(self) -> None:
         # Adds two lists whose first three tokens are the same and then are different
         root = TokenNode()
+        assert root is not None
         root.add_tokens([1, 2, 3, 4])
         root.add_tokens([1, 2, 3, 5])
         assert set(root.children) == {1}
-        node = root.get_child(1).get_child(2).get_child(3)
+        node = root.get_child(1).get_child(2).get_child(3) # type: ignore[union-attr]
+        assert node is not None
         assert set(node.children) == {4, 5}
         assert node.isentry is False
         assert root.is_entry([1, 2, 3, 4])
@@ -84,7 +86,7 @@ class TestTokenNode():
         root = TokenNode()
         root.add_tokens([1, 2, 3, 4, 5])
         root.add_tokens([1, 2, 3])
-        node = root.get_child(1).get_child(2).get_child(3)
+        node = root.get_child(1).get_child(2).get_child(3) # type: ignore[union-attr]
         assert node.isentry is True
         assert set(node.children) == {4}
         assert root.is_entry([1, 2, 3])
