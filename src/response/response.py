@@ -29,8 +29,9 @@ class ResponseBuilder():
         self.appendLine(c)
         return self
 
-    def appendLine(self, string: str) -> "ResponseBuilder":
+    def appendLine(self, string: str | None = None) -> "ResponseBuilder":
         # self.content += '\n' + self.addIndent() + string
+        string = string or ""
         return self.append('\n').addIndent().append(string)
 
     def append(self, string: str) -> "ResponseBuilder":
@@ -40,25 +41,40 @@ class ResponseBuilder():
     def __str__(self) -> str:
         return self.content
 
-# class LogitPicker(ABC):
-#     @abstractmethod
-#     def __init__(self, llm: Small_LLM_Model):
-#         ...
+class LogitPicker(ABC):
+    def __init__(self, llm: Small_LLM_Model):
+        self.llm = llm
 
-#     @abstractmethod
-#     def pick_logit(logits: list[int]):
-#         ...
+    def _single_token(self, text: str) -> int:
+        tokens: list[int] = self.llm.encode(text).tolist()[0]
+        if len(tokens) != 1:
+            raise ValueError(f'with the current tokenizer {text} is not encoded as a single token')
+        return tokens[0]
 
-# class MultiOptionPicker(ABC):
-#     def __init__(self,
-#         llm: Small_LLM_Model,
-#         functions_list: list[FunctionDefinition]
-#     ):
-#         self.func_token_tree: TokenNode = TokenNode()
-#         for fun_def in self.functions_definitions:
-#             tokens = self.llm.encode(fun_def.name)[0].tolist()
-#             self.func_token_tree.add_tokens(tokens)
-        
+    @abstractmethod
+    def pick_logit(self, logits: list[float]) -> int | None:
+        """Return the picked token, or None when generation must stop.
+        Implementations update their internal state with the picked token."""
+        ...
+
+class MultiOptionPicker(LogitPicker):
+    def __init__(self, llm: Small_LLM_Model, token_tree: TokenNode):
+        super().__init__(llm)
+        self.token_node: TokenNode = token_tree
+        self.end_token: int = self._single_token('"')
+
+    def pick_logit(self, logits: list[float]) -> int | None:
+        allowed_tokens: list[int] = list(self.token_node.children.keys())
+        if self.token_node.isentry:
+            allowed_tokens.append(self.end_token)
+        if len(allowed_tokens) == 0:
+            raise ValueError("There are no more options")
+        picked: int = max(allowed_tokens, key=lambda t: logits[t])
+        if picked == self.end_token:
+            return None
+        # it will not get None because picked is one of the children
+        self.token_node = self.token_node.get_child(picked) # type: ignore[assignment]
+        return picked
 
 
 class PromptResponse():
@@ -91,9 +107,9 @@ class PromptResponse():
 
     def generate_response(self) -> str:
         self.response.openWith('[')
-        self.response.openWith('{')
+        self.response.appendLine().openWith('{')
         self.add_prompt()
-        self.add_function()
+        self.add_function_name()
         self.add_arguments()
         self.response.closeWith('}')
         self.response.closeWith(']')
@@ -111,37 +127,26 @@ class PromptResponse():
     def add_prompt(self) -> None:
         self.response.appendLine(f'"prompt": "{self.prompt.prompt}",')
 
-    def add_function(self) -> str:
-        current_token_node: TokenNode = self.build_tokenized_functions_tree()
+    def add_function_name(self) -> str:
+        token_tree: TokenNode = self.build_tokenized_functions_tree()
         self.response.appendLine('"name": "')
+        name: str = self.infer_text(MultiOptionPicker(self.llm, token_tree))
+        self.response.append('",')
+        return name
 
+    def infer_text(self, picker: LogitPicker) -> str:
         enc_prompt: list[int] = self.llm.encode(self.response.content).tolist()[0]
-        enc_function: list[int] = []
-        end_token_list: list[int] = self.llm.encode('"').tolist()[0]
-        if len(end_token_list) !=1:
-            raise ValueError('with the current tokenizer " is not encoded as a single token')
-        else:
-            end_token: int = end_token_list[0]
+        enc_generated: list[int] = []
         while True:
             logits: list[float] = self.llm.get_logits_from_input_ids(enc_prompt)
-            allowed_tokens: list[int] = [t for t in current_token_node.children.keys()]
-            if current_token_node.isentry == True:
-                allowed_tokens.append(end_token)
-            if len(allowed_tokens) == 0:
-                raise ValueError("There are no more options")
-            next_encoded: int = max(
-                range(len(logits)),
-                key = lambda i: logits[i] if i in allowed_tokens else -inf
-            )
-            if next_encoded == end_token:
+            next_encoded: int | None = picker.pick_logit(logits)
+            if next_encoded is None:
                 break
             enc_prompt.append(next_encoded)
-            enc_function.append(next_encoded)
-            # it will not get None because the tokens that are not childs got probability -inf
-            current_token_node = current_token_node.get_child(next_encoded) # type: ignore[assignment] 
-        dec_func: str = self.llm.decode(enc_function)
-        self.response.append(dec_func + '",')
-        return dec_func
+            enc_generated.append(next_encoded)
+        dec_text: str = self.llm.decode(enc_generated)
+        self.response.append(dec_text)
+        return dec_text
 
 
     def add_arguments(self) -> None:
