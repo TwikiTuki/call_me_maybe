@@ -58,10 +58,17 @@ class LogitPicker(ABC):
         ...
 
 class MultiOptionPicker(LogitPicker):
-    def __init__(self, llm: Small_LLM_Model, token_tree: TokenNode):
+    def __init__(self, llm: Small_LLM_Model, function_definitions: list[FunctionDefinition]):
         super().__init__(llm)
-        self.token_node: TokenNode = token_tree
+        self.token_node: TokenNode = self._build_token_tree(function_definitions)
         self.end_token: int = self._single_token('"')
+
+    def _build_token_tree(self, function_definitions: list[FunctionDefinition]) -> TokenNode:
+        token_tree: TokenNode = TokenNode()
+        for fun_def in function_definitions:
+            tokens: list[int] = self.llm.encode(fun_def.name)[0].tolist()
+            token_tree.add_tokens(tokens)
+        return token_tree
 
     def pick_logit(self, logits: list[float]) -> int | None:
         allowed_tokens: list[int] = list(self.token_node.children.keys())
@@ -116,21 +123,13 @@ class PromptResponse():
 
         return str(self.response)
 
-    #TODO delte
-    def build_tokenized_functions_tree(self) -> TokenNode:
-        tokenized_functions_tree: TokenNode = TokenNode()
-        for fun_def in self.functions_definitions:
-            tokens = self.llm.encode(fun_def.name)[0].tolist()
-            tokenized_functions_tree.add_tokens(tokens)
-        return tokenized_functions_tree
-
     def add_prompt(self) -> None:
         self.response.appendLine(f'"prompt": "{self.prompt.prompt}",')
 
     def add_function_name(self) -> str:
-        token_tree: TokenNode = self.build_tokenized_functions_tree()
         self.response.appendLine('"name": "')
-        name: str = self.infer_text(MultiOptionPicker(self.llm, token_tree))
+        picker = MultiOptionPicker(self.llm, self.functions_definitions)
+        name: str = self.infer_text(picker)
         self.response.append('",')
         return name
 
