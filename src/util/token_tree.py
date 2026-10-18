@@ -16,6 +16,9 @@ class TokenNode():
     def get_all_children(self) -> "ValuesView[TokenNode]":
         return self.children.values()
 
+    def get_all_children_id_list(self) -> list[int]:
+        return list(self.children.keys())
+
     def get_child(self, token: int) -> "TokenNode | None":
         return self.children.get(token)
 

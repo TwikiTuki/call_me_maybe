@@ -71,7 +71,7 @@ class MultiOptionPicker(LogitPicker):
         return token_tree
 
     def pick_logit(self, logits: list[float]) -> int | None:
-        allowed_tokens: list[int] = list(self.token_node.children.keys())
+        allowed_tokens: list[int] = self.token_node.get_all_children_id_list()
         if self.token_node.isentry:
             allowed_tokens.append(self.end_token)
         if len(allowed_tokens) == 0:

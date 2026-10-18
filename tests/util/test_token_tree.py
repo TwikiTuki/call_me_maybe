@@ -92,3 +92,25 @@ class TestTokenNode():
         assert root.is_entry([1, 2, 3])
         assert root.is_entry([1, 2, 3, 4, 5])
         assert not root.is_entry([1, 2, 3, 4])
+
+    def test_get_all_children_id(self) -> None:
+        root = TokenNode()
+        assert root.get_all_children_id_list() == []
+
+        # Adds children and checks they are returned as a list in insertion order
+        root.add_child(3)
+        root.add_child(1)
+        root.add_child(2)
+        assert isinstance(root.get_all_children_id_list(), list)
+        assert root.get_all_children_id_list() == [3, 1, 2]
+
+        # Adding an existing child must not duplicate its id
+        root.add_child(1)
+        assert root.get_all_children_id_list() == [3, 1, 2]
+
+        # Adding grandchildren must not change the ids of the root
+        root.add_tokens([1, 4, 5])
+        assert root.get_all_children_id_list() == [3, 1, 2]
+        child = root.get_child(1)
+        assert child is not None
+        assert child.get_all_children_id_list() == [4]
