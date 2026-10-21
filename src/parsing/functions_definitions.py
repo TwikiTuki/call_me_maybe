@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict, FilePath, TypeAdapter
 
 type LlmType = Literal["number", "string"]
 
-
+# TODO Really needed or could just work with LlmType?
 class TypeSpec(BaseModel):
     model_config = ConfigDict(extra='forbid')
     type: LlmType

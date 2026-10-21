@@ -1,5 +1,5 @@
 from src.parsing.prompts_file import Prompt
-from src.parsing.functions_definitions import FunctionDefinition
+from src.parsing.functions_definitions import FunctionDefinition, LlmType, TypeSpec
 from src.util.token_tree import TokenNode
 from typing import TYPE_CHECKING
 from math import inf
@@ -83,6 +83,84 @@ class MultiOptionPicker(LogitPicker):
         self.token_node = self.token_node.get_child(picked) # type: ignore[assignment]
         return picked
 
+class IntPicker(LogitPicker):
+    def __init__(self, llm: Small_LLM_Model, end_token: str = ',', max_tokens: int = 20):
+        super().__init__(llm)
+        self.end_token: int = self._single_token(end_token)
+        self.minus_token: int = self._single_token('-')
+        self.digit_tokens: list[int] = [self._single_token(str(d)) for d in range(10)]
+        self.max_tokens = max_tokens
+        self.picked_count: int = 0
+        self.last_picked: int | None = None
+
+    def pick_logit(self, logits: list[float]) -> int | None:
+        if self.picked_count >= self.max_tokens:
+            return None
+        allowed_tokens: list[int] = list(self.digit_tokens)
+        if self.picked_count == 0:
+            allowed_tokens.append(self.minus_token)
+        elif self.last_picked != self.minus_token:
+            # at least one digit was generated, so the number can end
+            allowed_tokens.append(self.end_token)
+        picked: int = max(allowed_tokens, key=lambda t: logits[t])
+        if picked == self.end_token:
+            return None
+        self.last_picked = picked
+        self.picked_count += 1
+        return picked
+
+
+class StringPicker(LogitPicker):
+    # tokens containing these would break the json string
+    FORBIDDEN_CHARS: str = '"\\\n'
+
+    def __init__(self, llm: Small_LLM_Model, end_token: str = '"', max_tokens: int = 100):
+        super().__init__(llm)
+        self.end_token: int = self._single_token(end_token)
+        self.max_tokens = max_tokens
+        self.picked_count: int = 0
+
+    def pick_logit(self, logits: list[float]) -> int | None:
+        if self.picked_count >= self.max_tokens:
+            return None
+        # tries the tokens from most to least likely until one is valid
+        for token in sorted(range(len(logits)), key=lambda t: logits[t], reverse=True):
+            if token == self.end_token:
+                return None
+            text: str = self.llm.decode([token])
+            if text == "" or any(c in text for c in self.FORBIDDEN_CHARS):
+                continue
+            self.picked_count += 1
+            return token
+        raise ValueError("There are no valid tokens")
+
+class QuotedStringPicker(StringPicker):
+    """StringPicker that also generates the opening and closing quotes."""
+
+    def __init__(self, llm: Small_LLM_Model, quote_token: str = '"', max_tokens: int = 100):
+        super().__init__(llm, end_token=quote_token, max_tokens=max_tokens)
+        self.opened: bool = False
+        self.closed: bool = False
+
+    def pick_logit(self, logits: list[float]) -> int | None:
+        if not self.opened:
+            self.opened = True
+            return self.end_token
+        if self.closed:
+            return None
+        picked: int | None = super().pick_logit(logits)
+        if picked is None:
+            # the string ended, so the closing quote is returned instead
+            self.closed = True
+            return self.end_token
+        return picked
+
+# Pickers used to generate the value of a parameter of each type
+PICKER_BY_TYPE: dict[LlmType, type[IntPicker] | type[QuotedStringPicker]] = {
+    "number": IntPicker,
+    "string": QuotedStringPicker,
+}
+
 
 class PromptResponse():
     def __init__(
@@ -116,8 +194,14 @@ class PromptResponse():
         self.response.openWith('[')
         self.response.appendLine().openWith('{')
         self.add_prompt()
-        self.add_function_name()
-        self.add_arguments()
+        function_name = self.add_function_name()
+        function: FunctionDefinition | None = None
+        for func in self.functions_definitions:
+            if (func.name == function_name):
+                function = func
+                break
+        assert function != None
+        self.add_parameters(function)
         self.response.closeWith('}')
         self.response.closeWith(']')
 
@@ -148,9 +232,18 @@ class PromptResponse():
         return dec_text
 
 
-    def add_arguments(self) -> None:
-        ...
+    def add_parameters(self, function: FunctionDefinition) -> None:
+        self.response.appendLine('"parameters": ').openWith("{")
+        first_param = True
+        for param_name, param_type in function.parameters.items():
+            if (not first_param):
+                self.response.append(",")
+            self.add_one_parameter(param_name, param_type)
+            first_param = False
+        self.response.closeWith('}')
 
-    def add_one_argument(self) -> None:
-        ...
+    def add_one_parameter(self, param_name: str, param_type: TypeSpec) -> str:
+        self.response.appendLine(f'"{param_name}": ')
+        picker = PICKER_BY_TYPE[param_type.type](self.llm)
+        return self.infer_text(picker)
 
