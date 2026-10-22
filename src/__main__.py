@@ -67,7 +67,7 @@ def __main__() -> None:
         response.generate_response() 
         print('======================================================================')
         print(response.response.content)
-        break
+        # break
     
     print("__main__")
 
@@ -80,7 +80,5 @@ def foo() -> None:
 
 
 if __name__ == "__main__":
-    foo()
-    exit()
     __main__()
     print("THE END")

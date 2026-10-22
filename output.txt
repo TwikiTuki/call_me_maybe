@@ -1,0 +1,281 @@
+twiki-tuki@twiki-tuki-IdeaPad-1-15ALC7:~/Documents/call_me_maybe/project$ make run
+uv run python -m src \
+--functions_definitions  data/input/functions_definition.json \
+--input data/input/function_calling_tests.json \
+--output data/input/function_call.json 
+hellow from src/__main__.py
+Parsing arguments
+full argv: 
+['/home/twiki-tuki/Documents/call_me_maybe/project/src/__main__.py', '--functions_definitions', 'data/input/functions_definition.json', '--input', 'data/input/function_calling_tests.json', '--output', 'data/input/function_call.json']
+argv: 
+['--functions_definitions', 'data/input/functions_definition.json', '--input', 'data/input/function_calling_tests.json', '--output', 'data/input/function_call.json']
+args dict: 
+{'functions_definitions': 'data/input/functions_definition.json', 'input': 'data/input/function_calling_tests.json', 'output': 'data/input/function_call.json'}
+Loading function definitions
+Loading prompts
+Cheking output file
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Change order of this sitring: "hellow you". The first char must be the last and the last the first
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Change order of this sitring: "hellow you". The first char must be the last and the last the first",
+  "name": "fn_reverse_string",
+  "parameters": {
+   "s": "hellow you"
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+What is the sum of 2 and 3?
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "What is the sum of 2 and 3?",
+  "name": "fn_add_numbers",
+  "parameters": {
+   "a": 2,
+   "b": 3
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+What is the sum of 265 and 345?
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "What is the sum of 265 and 345?",
+  "name": "fn_add_numbers",
+  "parameters": {
+   "a": 265,
+   "b": 345
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Greet shrek
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Greet shrek",
+  "name": "fn_greet",
+  "parameters": {
+   "name": "shrek"
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Greet john
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Greet john",
+  "name": "fn_greet",
+  "parameters": {
+   "name": "john"
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Reverse the string 'hello'
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Reverse the string 'hello'",
+  "name": "fn_reverse_string",
+  "parameters": {
+   "s": "hello"
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Reverse the string 'world'
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Reverse the string 'world'",
+  "name": "fn_reverse_string",
+  "parameters": {
+   "s": "world"
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+What is the square root of 16?
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "What is the square root of 16?",
+  "name": "fn_get_square_root",
+  "parameters": {
+   "a": 16
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Calculate the square root of 144
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Calculate the square root of 144",
+  "name": "fn_get_square_root",
+  "parameters": {
+   "a": 144
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Replace all numbers in "Hello 34 I'm 233 years old" with NUMBERS
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Replace all numbers in "Hello 34 I'm 233 years old" with NUMBERS",
+  "name": "fn_substitute_string_with_regex",
+  "parameters": {
+   "source_string": "Hello 34 I'm 233 years old",
+   "regex": "([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0-9]+) ?([0",
+   "replacement": "NUMBERS"
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Replace all vowels in 'Programming is fun' with asterisks
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Replace all vowels in 'Programming is fun' with asterisks",
+  "name": "fn_substitute_string_with_regex",
+  "parameters": {
+   "source_string": "Programming is fun",
+   "regex": "([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAEIOU])|([aeiouAE",
+   "replacement": " * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+  }
+ }
+]
+======================================================================
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Substitute the word 'cat' with 'dog' in 'The cat sat on the mat with another cat'
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Substitute the word 'cat' with 'dog' in 'The cat sat on the mat with another cat'",
+  "name": "fn_substitute_string_with_regex",
+  "parameters": {
+   "source_string": "The cat sat on the mat with another cat",
+   "regex": "cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|cat.*cat$|",
+   "replacement": "dog"
+  }
+ }
+]
+__main__
+THE END
+echo ran
+ran
+

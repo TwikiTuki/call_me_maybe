@@ -94,7 +94,7 @@ class FakeLLM():
         elif self.current == len(self.wanted):
             preferred = '"'
         else:
-            preferred = FakeLLM._decode([int(random() * self.VOCAB_SIZE)])
+            preferred = FakeLLM._decode([int(random() * self.VOCAB_SIZE)])   # TODO maybe puting random thing on a test is not best practice. Could create a string of random chars and use that with modulus
 
         self.current += 1
         logits: list[float] = [0.0] * self.VOCAB_SIZE

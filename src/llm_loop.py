@@ -61,6 +61,55 @@ result=19
  do this operation 11111111113308039020 - 11111111113308039019
 operation='''
 
+
+INPUT_STR = '''
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Replace all vowels in 'Programming is fun' with asterisks
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Replace all vowels in 'Programming is fun' with asterisks",
+  "name": "fn_substitute_string_with_regex",
+  "parameters": {
+   "source_string": "Programming is fun",
+   "regex": "([aeiouAEIO
+  }
+ }
+
+'''
+
+INPUT_STR='''
+You will be given a list of functions in json format.
+Then you will be given a task and must decide which of the fuctions fits this purpose
+You must generate a json with the original prompt the name of the function for doing the task and the argument values
+
+FUNCTIONS LIST: 
+[{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
+
+TASK: 
+Replace all vowels in 'Programming is fun' with asterisks
+
+" U
+
+JSON RESPONSE: 
+[
+ {
+  "prompt": "Replace all vowels in 'Programming is fun' with asterisks",
+  "name": "fn_substitute_string_with_regex",
+  "parameters": {
+   "source_string": "Programming is fun",
+   "regex": "([aeiouAEIO
+'''
+
+
 # Downloads the model on the first run and reuses ./models afterwards.
 # llm = Small_LLM_Model(cache_dir="./models", local_files_only=False)
 
@@ -76,7 +125,7 @@ for i in range(50):
     next_encoded: int = max(range(len(logits)), key = lambda i: logits[i])
     encoded.append(next_encoded)
     next_decoded = llm.decode([next_encoded])
-    print("iter: ", llm.decode(encoded), f'<{next_decoded}>')
+    print("iter: ", llm.decode(encoded), f'<{next_decoded}>', flush=True)
     print()
 
 def __main__() -> None:
