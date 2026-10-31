@@ -63,9 +63,11 @@ def __main__() -> None:
     llm: Small_LLM_Model = Small_LLM_Model(cache_dir="./models", local_files_only=True)              # I is using the local option llm model
     for p in prompts:
         # p.prompt = '"give me this string but changing the order the first char must be the last and the last char must be the first: \"hi how are you\";"'
+        print('======================================================================')
+        print("Generating response for: ")
+        print(f"    {p}")
         response: PromptResponse = PromptResponse(p, function_definitions, llm=llm) 
         response.generate_response() 
-        print('======================================================================')
         print(response.response.content)
         # break
     

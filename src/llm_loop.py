@@ -1,6 +1,7 @@
 print("hellow from src/__main__.py")
 
 from llm_sdk import Small_LLM_Model
+from src.response.response import StringPicker
 
 
 INPUT_STR = "-Hellow"
@@ -90,6 +91,11 @@ INPUT_STR='''
 You will be given a list of functions in json format.
 Then you will be given a task and must decide which of the fuctions fits this purpose
 You must generate a json with the original prompt the name of the function for doing the task and the argument values
+Also you are givena list of habilities for completing this task you can call themm with <hability_name>. The abilities you have are:
+
+HABILITIES:
+<generate_regex>: Do not put any regex content on your responses jus put <generate_regex> in the place where it would be
+ 
 
 FUNCTIONS LIST: 
 [{"name": "fn_add_numbers", "description": "Add two numbers together and return their sum.", "parameters": {"a": {"type": "number"}, "b": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_greet", "description": "Generate a greeting message for a person by name.", "parameters": {"name": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_reverse_string", "description": "Reverse a string and return the reversed result.", "parameters": {"s": {"type": "string"}}, "returns": {"type": "string"}}, {"name": "fn_get_square_root", "description": "Calculate the square root of a number.", "parameters": {"a": {"type": "number"}}, "returns": {"type": "number"}}, {"name": "fn_substitute_string_with_regex", "description": "Replace all occurrences matching a regex pattern in a string.", "parameters": {"source_string": {"type": "string"}, "regex": {"type": "string"}, "replacement": {"type": "string"}}, "returns": {"type": "string"}}]
@@ -97,7 +103,6 @@ FUNCTIONS LIST:
 TASK: 
 Replace all vowels in 'Programming is fun' with asterisks
 
-" U
 
 JSON RESPONSE: 
 [
@@ -106,7 +111,9 @@ JSON RESPONSE:
   "name": "fn_substitute_string_with_regex",
   "parameters": {
    "source_string": "Programming is fun",
-   "regex": "([aeiouAEIO
+   "regex": "'''
+
+'''([aeiouAEIO
 '''
 
 
@@ -117,12 +124,17 @@ JSON RESPONSE:
 llm = Small_LLM_Model(cache_dir="./models", local_files_only=True)
 encoded = llm.encode(INPUT_STR)[0].tolist()
 
+picker:StringPicker = StringPicker(llm)
 
 for i in range(50):
     # print("BREAKING")
     # break
     logits: list[float] = llm.get_logits_from_input_ids(encoded)
-    next_encoded: int = max(range(len(logits)), key = lambda i: logits[i])
+    # next_encoded: int = max(range(len(logits)), key = lambda i: logits[i])
+    next_encoded = picker.pick_logit(logits)
+    if next_encoded == None:
+        print("Finished looping")
+        break
     encoded.append(next_encoded)
     next_decoded = llm.decode([next_encoded])
     print("iter: ", llm.decode(encoded), f'<{next_decoded}>', flush=True)

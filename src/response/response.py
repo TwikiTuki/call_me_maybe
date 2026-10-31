@@ -120,12 +120,26 @@ class StringPicker(LogitPicker):
         self.max_tokens = max_tokens
         self.picked_count: int = 0
 
+    def is_finish_token(self, token: int | None) -> bool:
+        if token == None:
+            return True
+        return self.llm.decode([self.end_token]) in self.llm.decode([token])
+
+
     def pick_logit(self, logits: list[float]) -> int | None:
         if self.picked_count >= self.max_tokens:
             return None
         # tries the tokens from most to least likely until one is valid
+
+        # n = 25
+        # for t in sorted(range(len(logits)), key=lambda t: logits[t], reverse=True):
+        #     print(self.llm.decode(t), logits[t])
+        #     n -= 1
+        #     if n <= 0:
+        #         break
+        # print('" logit', logits[self.llm.encode('"')])
         for token in sorted(range(len(logits)), key=lambda t: logits[t], reverse=True):
-            if token == self.end_token:
+            if self.is_finish_token(token): 
                 return None
             text: str = self.llm.decode([token])
             if text == "" or any(c in text for c in self.FORBIDDEN_CHARS):
